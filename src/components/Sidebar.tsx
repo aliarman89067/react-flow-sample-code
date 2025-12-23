@@ -8,7 +8,9 @@ import {
   Share2Icon,
   XIcon,
 } from "lucide-react";
-import OptionsTab from "./OptionsTab";
+import OptionsTab from "./TriggerOptionsTab";
+import TriggerOptionsTab from "./TriggerOptionsTab";
+import NodeOptionsTab from "./NodeOptionsTab";
 
 interface Props {
   isSidebarOpen: boolean;
@@ -16,7 +18,7 @@ interface Props {
 }
 
 const triggerData = {
-  label: "Triggers Type",
+  label: "Add Trigger",
   options: [
     {
       id: 1,
@@ -28,25 +30,15 @@ const triggerData = {
       label: "Post Message",
       icon: MessageCircleIcon,
     },
-    {
-      id: 3,
-      label: "Like Post",
-      icon: HandHeartIcon,
-    },
-    {
-      id: 4,
-      label: "Share Post",
-      icon: Share2Icon,
-    },
   ],
 };
 
 const messageNodeOptions = {
-  label: "Node Type",
+  label: "Add Node",
   options: [
     {
       id: 1,
-      label: "Send Template",
+      label: "Template",
       icon: LayoutTemplateIcon,
     },
     {
@@ -56,7 +48,7 @@ const messageNodeOptions = {
     },
     {
       id: 3,
-      label: "Message",
+      label: "Reply",
       icon: MailIcon,
     },
   ],
@@ -79,8 +71,8 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <OptionsTab data={triggerData} />
-          <OptionsTab data={messageNodeOptions} />
+          <TriggerOptionsTab data={triggerData} />
+          <NodeOptionsTab data={messageNodeOptions} />
         </div>
       </div>
     </div>

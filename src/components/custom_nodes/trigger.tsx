@@ -1,13 +1,14 @@
 import { Handle, Position } from "@xyflow/react";
 import { motion } from "framer-motion";
+import type { IconType } from "react-icons";
 
 const Trigger = ({ data }: any) => {
-  const { label, Icon } = data;
+  const { node, platforms } = data;
   return (
     <div className="flex flex-col items-center gap-1 w-fit">
-      <div className="w-32 h-24 rounded-l-full ring-[#14213d] ring-offset-2 ring-2 bg-[#14213d] border-neutral-800 flex items-center justify-center">
-        <div className="w-16 h-16 relative flex items-center justify-center">
-          <Icon className="absolute size-6 text-white z-20" />
+      <div className="w-16 h-12 rounded-l-full ring-[#14213d] ring-offset-2 ring-2 bg-[#14213d] border-neutral-800 flex items-center justify-center">
+        <div className="w-8 h-8 relative flex items-center justify-center">
+          <node.Icon className="absolute size-3 text-white z-20" />
           <div className="absolute w-full h-full rounded-full top-0 left-0 bg-white/0 blur-xl z-[11]" />
           <div className="absolute w-full h-full rounded-full top-0 left-0 bg-white/10 backdrop-blur-md z-10" />
           <motion.div
@@ -31,7 +32,23 @@ const Trigger = ({ data }: any) => {
           />
         </div>
       </div>
-      <span className="font-semibold text-sm text-neutral-800">{label}</span>
+      <div className="flex flex-col">
+        <span className="font-semibold text-[8px] text-neutral-800">
+          {node.label}
+        </span>
+        <div className="flex items-center gap-1">
+          {platforms.map(
+            (item: { Icon: IconType; label: string }, index: number) => (
+              <div
+                key={index}
+                className="w-4 h-4 rounded-full bg-neutral-800 flex items-center justify-center"
+              >
+                <item.Icon className="size-2.5 text-white" />
+              </div>
+            )
+          )}
+        </div>
+      </div>
       <Handle type="source" position={Position.Right} />
     </div>
   );

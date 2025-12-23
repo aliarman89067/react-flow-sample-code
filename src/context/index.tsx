@@ -41,7 +41,7 @@ export const FlowContext = createContext<FlowContextType>({
 });
 
 const nodeTypes: any = {
-  directMessage: Trigger,
+  trigger: Trigger,
   messageNode: Node,
 };
 
