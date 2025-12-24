@@ -1,9 +1,45 @@
+import { FlowContext } from "@/context";
 import { Handle, Position } from "@xyflow/react";
 import { motion } from "framer-motion";
+import { EditIcon, type LucideIcon } from "lucide-react";
+import { useContext } from "react";
 import type { IconType } from "react-icons";
 
-const Trigger = ({ data }: any) => {
-  const { node, platforms } = data;
+type TriggerType = {
+  id: string;
+  data: {
+    node: {
+      label: string;
+      Icon: LucideIcon;
+    };
+    nodeData: {
+      type: "Direct Message" | "Post Message";
+    };
+    platforms: {
+      label: string;
+      Icon: LucideIcon;
+    }[];
+  };
+};
+
+const Trigger = ({ data, id }: TriggerType) => {
+  const { setEditData } = useContext(FlowContext);
+  const { node, platforms, nodeData } = data;
+
+  const handleUpdateNode = () => {
+    setEditData({
+      id,
+      type: nodeData.type,
+      nodeData,
+      isTrigger: true,
+      selectedOption: {
+        label: node.label,
+        Icon: node.Icon,
+      },
+      platforms,
+    });
+  };
+
   return (
     <div className="flex flex-col items-center gap-1 w-fit">
       <div className="w-16 h-12 rounded-l-full ring-[#14213d] ring-offset-2 ring-2 bg-[#14213d] border-neutral-800 flex items-center justify-center">
@@ -47,6 +83,12 @@ const Trigger = ({ data }: any) => {
               </div>
             )
           )}
+          <div
+            onClick={handleUpdateNode}
+            className="w-4 h-4 rounded-full bg-neutral-800 border border-neutral-800 flex items-center justify-center cursor-pointer"
+          >
+            <EditIcon className="size-2.5 text-white" />
+          </div>
         </div>
       </div>
       <Handle type="source" position={Position.Right} />

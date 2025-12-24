@@ -14,9 +14,7 @@ type nodes = {
     x: number;
     y: number;
   };
-  data: {
-    label: string;
-  };
+  data: any
 }[];
 type edges = {
   id: string;
@@ -30,6 +28,8 @@ interface FlowContextType {
   setNodes: Dispatch<SetStateAction<nodes>>;
   setEdges: Dispatch<SetStateAction<edges>>;
   nodeTypes: any;
+  editData: any;
+  setEditData: Dispatch<SetStateAction<any>>;
 }
 
 export const FlowContext = createContext<FlowContextType>({
@@ -38,16 +38,19 @@ export const FlowContext = createContext<FlowContextType>({
   setNodes: () => {},
   setEdges: () => {},
   nodeTypes: {},
+  editData: null,
+  setEditData: () => {},
 });
 
 const nodeTypes: any = {
   trigger: Trigger,
-  messageNode: Node,
+  node: Node,
 };
 
 export const Provider = ({ children }: { children: ReactNode }) => {
   const [nodes, setNodes] = useState<nodes>([]);
   const [edges, setEdges] = useState<edges>([]);
+  const [editData, setEditData] = useState(null);
   return (
     <FlowContext.Provider
       value={{
@@ -56,6 +59,8 @@ export const Provider = ({ children }: { children: ReactNode }) => {
         setNodes,
         setEdges,
         nodeTypes,
+        editData,
+        setEditData,
       }}
     >
       {children}

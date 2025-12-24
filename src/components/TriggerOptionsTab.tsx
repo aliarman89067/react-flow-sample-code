@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { FaFacebook } from "react-icons/fa";
 import { FaInstagramSquare } from "react-icons/fa";
@@ -44,7 +44,7 @@ const platforms = [
 
 const TriggerOptionsTab = ({ data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { setNodes, nodes } = useContext(FlowContext);
+  const { setNodes, nodes, editData, setEditData } = useContext(FlowContext);
 
   const [selectedOption, setSelectedOption] = useState<{
     label: string;
@@ -57,6 +57,17 @@ const TriggerOptionsTab = ({ data }: Props) => {
       }[]
     | null
   >(null);
+
+  useEffect(() => {
+    if (editData && editData.isTrigger) {
+      setIsOpen(true);
+      setSelectedOption({
+        Icon: editData.selectedOption.Icon,
+        label: editData.selectedOption.label,
+      });
+      setSelectedPlatforms(editData.platforms);
+    }
+  }, [editData, setEditData]);
 
   const handleCreate = () => {
     if (!selectedOption) {
@@ -76,6 +87,9 @@ const TriggerOptionsTab = ({ data }: Props) => {
           label: selectedOption.label,
           Icon: selectedOption.Icon,
         },
+        nodeData: {
+          type: selectedOption.label,
+        },
         platforms: selectedPlatforms?.map((item) => ({
           Icon: item.Icon,
           label: item.label,
@@ -84,6 +98,7 @@ const TriggerOptionsTab = ({ data }: Props) => {
     };
     setNodes((prevNodes) => [newNode, ...prevNodes]);
     setIsOpen(false);
+    setEditData(null);
   };
 
   const handleAddPlatform = ({
@@ -104,6 +119,43 @@ const TriggerOptionsTab = ({ data }: Props) => {
       setSelectedPlatforms((prev) => [...(prev || []), { Icon, label }]);
     }
   };
+  const updateTrigger = () => {
+    if (!selectedOption) {
+      alert("Please select an option before creating a node.");
+      return;
+    }
+    if (selectedPlatforms?.length === 0) {
+      alert("Please select atleast 1 platform.");
+      return;
+    }
+    const updatedNode: any = {
+      id: editData.id,
+      type: "trigger",
+      data: {
+        node: selectedOption,
+        nodeData: {
+          type: selectedOption.label,
+        },
+        platforms: selectedPlatforms,
+      },
+    };
+    console.log(updatedNode);
+    setNodes((prev) =>
+      prev.map((item) => {
+        const targetNode = item.id === updatedNode.id;
+        if (targetNode) {
+          return {
+            ...item,
+            data: updatedNode.data,
+          };
+        } else {
+          return item;
+        }
+      })
+    );
+    setIsOpen(false);
+    setEditData(null);
+  };
 
   const isPlatformSelected = (platform: string) => {
     return !!selectedPlatforms?.find((item) => item.label === platform);
@@ -111,7 +163,16 @@ const TriggerOptionsTab = ({ data }: Props) => {
 
   return (
     <div className="flex flex-col gap-3">
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(value) => {
+          if (!value) {
+            setEditData(null);
+            setSelectedOption(null);
+          }
+          setIsOpen(value);
+        }}
+      >
         <DialogTrigger asChild>
           <Button>{data.label}</Button>
         </DialogTrigger>
@@ -200,8 +261,11 @@ const TriggerOptionsTab = ({ data }: Props) => {
               </div>
             ) : null}
             <div className="flex items-center justify-center gap-4">
-              <Button onClick={handleCreate} className="mt-7 px-5 flex-1">
-                Create
+              <Button
+                onClick={() => (editData ? updateTrigger() : handleCreate())}
+                className="mt-7 px-5 flex-1"
+              >
+                {editData ? "Update" : "Create"}
               </Button>
               <Button
                 variant="destructive"

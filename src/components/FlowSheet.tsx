@@ -11,7 +11,6 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { FlowContext } from "@/context";
-import Trigger from "./custom_nodes/trigger";
 
 const FlowSheet = () => {
   const { edges, nodes, setNodes, setEdges, nodeTypes } =
@@ -47,6 +46,7 @@ const FlowSheet = () => {
       >
         <Controls />
         <MiniMap />
+        {/* @ts-ignore */}
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
     </div>
